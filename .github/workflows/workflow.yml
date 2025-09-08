@@ -38,7 +38,7 @@ jobs:
       - name: Build Angular app
         run: ng build
 
-      # Deploy build to server
+        # Deploy build to server
       - name: Copy dist folder via SCP
         uses: appleboy/scp-action@master
         with:
@@ -46,5 +46,5 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./dist/elearning-website/*"
+          source: "dist/elearning-website/**"
           target: "/var/www/html/elearning-website/"
