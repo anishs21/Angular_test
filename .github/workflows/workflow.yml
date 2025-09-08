@@ -15,31 +15,31 @@ jobs:
          node-version: [22.x]
 
     steps:
-      # 1️⃣ Checkout code
+      #  Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup Node.js
+      #  Setup Node.js
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      # 3️⃣ Install Angular CLI globally
+      #  Install Angular CLI globally
       - name: Install Angular CLI
         run: npm install -g @angular/cli@15.1.6
 
-      # 4️⃣ Install dependencies
+      #  Install dependencies
       - name: Install npm dependencies
         run: npm install
 
-      # 5️⃣ Build Angular app
+      #  Build Angular app
       - name: Build Angular App
         run: ng build 
 
-      # 6 Fix permissions via SSH
-      - name: Fix permissions on server
+     # Fix permissions via SSH
+      - name: Prepare /var/www/html/ on server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -47,9 +47,10 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            sudo mkdir -p /var/www/html/
             sudo chown -R ubuntu:ubuntu /var/www/html/
 
-          # 7  Deploy to server via SCP
+      #  Deploy to server via SCP
       - name: Copy dist folder via SCP
         uses: appleboy/scp-action@master
         with:
