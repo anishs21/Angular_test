@@ -15,26 +15,26 @@ jobs:
         node-version: [22.x]
 
     steps:
-      #  Checkout repository
+      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
       # Setup Node.js
-      - name: Setup Node.js  ${{matrix.node-version}}
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{matrix.node-version}}
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      #  Install Angular CLI
+      # Install Angular CLI
       - name: Install Angular CLI
         run: npm install -g @angular/cli@15.1.6
 
-      #  Install dependencies
+      # Install dependencies
       - name: Install npm dependencies
         run: npm install
 
-      # Build Angular
+      # Build Angular app
       - name: Build Angular app
         run: ng build
 
@@ -46,5 +46,5 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./dist/*"
+          source: "./dist/elearning-website/*"
           target: "/var/www/html/elearning-website/"
