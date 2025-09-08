@@ -1,45 +1,22 @@
-name: Angular Main
+name: Angular Frontend Deployment
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ]  
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-         node-version: [22.x]
-
     steps:
-      #  Checkout code
+      #  Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      #  Setup Node.js
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      #  Install Angular CLI globally
-      - name: Install Angular CLI
-        run: npm install -g @angular/cli@15.1.6
-
-      #  Install dependencies
-      - name: Install npm dependencies
-        run: npm install
-
-      #  Build Angular app
-      - name: Build Angular App
-        run: ng build 
-
-     # Fix permissions via SSH
-      - name: Prepare /var/www/html/ on server
+      #  SSH into server and pull latest changes
+      - name: Deploy Angular build
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -47,17 +24,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo mkdir -p /var/www/html/
-            sudo chown -R ubuntu:ubuntu /var/www/html/
-
-      #  Deploy to server via SCP
-      - name: Copy dist folder via SCP
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./dist/*"
-          target: "/var/www/html/"
-          strip_components: 1
+            cd /var/www/html/elearning-website
+            git pull origin main || { echo 'Deployment failed' && exit 1; }
