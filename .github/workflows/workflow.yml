@@ -36,7 +36,7 @@ jobs:
 
       # 5️⃣ Build Angular app
       - name: Build Angular App
-        run: ng build --configuration production
+        run: ng build 
 
       # 6 Fix permissions via SSH
       - name: Fix permissions on server
