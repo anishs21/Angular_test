@@ -36,7 +36,7 @@ jobs:
 
       # 5 Build Angular app
       - name: Build Angular App
-        run: ng build --prod
+        run: ng build
 
       # 6 Deploy to server via SCP
       - name: Copy dist folder via SSH
